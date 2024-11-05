@@ -9,6 +9,13 @@ repositories {
     mavenCentral()
 }
 
+java {
+    toolchain {
+        setSourceCompatibility(17)
+        setTargetCompatibility(17)
+    }
+}
+
 dependencies {
     compileOnly("org.keycloak:keycloak-services:26.0.0")
     implementation("commons-codec:commons-codec:1.17.1")
