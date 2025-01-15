@@ -19,7 +19,7 @@
                     <script>
                         function onTelegramAuth(user) {
                             const original = "${p.loginUrl?js_string?no_esc}"
-                            const finalPath = original + "&telegram=" + utf8ToBase64(JSON.stringify(user))
+                            const finalPath = original + "&telegram=" + encodeURIComponent(utf8ToBase64(JSON.stringify(user)))
 
                             window.location.href = finalPath
                         }
