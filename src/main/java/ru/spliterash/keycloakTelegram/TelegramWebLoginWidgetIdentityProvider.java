@@ -1,9 +1,6 @@
 package ru.spliterash.keycloakTelegram;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ru.spliterash.keycloakTelegram.model.TelegramAuthData;
-import ru.spliterash.keycloakTelegram.model.TelegramWebAuthenticatorConfig;
-import ru.spliterash.keycloakTelegram.validator.TelegramAuthDataValidator;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
@@ -24,6 +21,9 @@ import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.services.ErrorPage;
 import org.keycloak.sessions.AuthenticationSessionModel;
+import ru.spliterash.keycloakTelegram.model.TelegramAuthData;
+import ru.spliterash.keycloakTelegram.model.TelegramWebAuthenticatorConfig;
+import ru.spliterash.keycloakTelegram.validator.TelegramAuthDataValidator;
 
 import java.io.IOException;
 import java.util.Base64;
@@ -98,7 +98,9 @@ public class TelegramWebLoginWidgetIdentityProvider extends AbstractIdentityProv
             context.setLastName(telegramAuthData.lastName());
             context.setIdp(self);
             context.setAuthenticationSession(authSession);
-            context.getContextData().put(TG_USER_PHOTO_URL_ATTRIBUTE_NAME, telegramAuthData.photoUrl());
+            var photoUrl = telegramAuthData.photoUrl();
+            if (photoUrl != null)
+                context.getContextData().put(TG_USER_PHOTO_URL_ATTRIBUTE_NAME, photoUrl);
 
             return callback.authenticated(context);
         }

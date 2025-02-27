@@ -3,7 +3,7 @@ plugins {
     id("io.freefair.lombok") version "8.10.2"
 }
 
-version = "1.0.1"
+version = "1.0.2"
 
 repositories {
     mavenCentral()
