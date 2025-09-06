@@ -22,7 +22,7 @@ jobs:
         with:
           name: artifact
           path: |
-            build/libs/keycloak-telegram-identity-provider-*.jar
+            build/libs/zendu-app-keycloak-telegram-provider-*.jar
 
   release:
     needs: build
@@ -38,7 +38,7 @@ jobs:
           path: build/libs/
       - name: Get Artifact Filename
         id: get_filename
-        run: echo "FILENAME=$(basename build/libs/keycloak-telegram-identity-provider-*.jar)" >> $GITHUB_ENV
+        run: echo "FILENAME=$(basename build/libs/zendu-app-keycloak-telegram-provider-*.jar)" >> $GITHUB_ENV
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1

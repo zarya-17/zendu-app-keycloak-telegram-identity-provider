@@ -1,19 +1,39 @@
-# Telegram Widget Identity Provider
+# Telegram Identity Provider
 
-The project allows you to add telegram as an identity provider to the keycloak
-![form.png](.github/images/login_form.png)
+The project allows you to add telegram as an identity provider to the keycloak.
+
+This IdP is compatible with telegram login widget and telegram mini apps.
+
+Project is fork of https://github.com/Spliterash/keycloak-telegram-identity-provider (author [Spliterash](https://github.com/Spliterash))
+which is fork of  https://github.com/rickispp/telegram-web-keycloak-authenticator (author [Valentin Paydulov](https://github.com/rickispp))
 
 ## Setup
 
-1) Set `frame-src 'self' https://oauth.telegram.org/; frame-ancestors 'self' https://oauth.telegram.org/; object-src 'none';` in Realm `Content-Security-Policy` on `Security Defenses` tab
-2) Select `keycloak.v2-telegram-web-login` theme
-3) Add telegram identity provider.
-   * <b>Specify alias</b> like your bot username, it's important. If you are making your own theme, you can skip this step, and set the value of your bot directly to the theme
-   * Paste bot token at client secret
-   * ClientID ignored, but required on frontend, so you can paste any stuff you want
-     ![setup.png](.github/images/identity_provider.png)
-4) Done, now you can register and log in via telegram
+### Keycloak setup
 
-PS: I do not override account theme, because i don't need it, and actually don't know how. Button available only on login page
+1) Add telegram identity provider to you realm
+2) Pass bot token to client's secret
+3) (Optionally) Setup redirection link to page with telegram widget
+4) Setup keycloak client
+5) Duplicate browser flow in authentication tab
+6) Add execution `Pass telegram data` as alternative and place it before execution `Cookie`
+7) Save flow and bind as browser flow
 
-This project is a hard fork of https://github.com/rickispp/telegram-web-keycloak-authenticator
+### Setup frontend
+
+To pass telegram data you need to encode this data with base64. And there is two options,depends on where you need
+implement verification:
+
+* Telegram login widget: you need to encode whole `user` parameter in function, that passed to `data-onauth`
+* Telegram mini-app: you need to encode whole `decodeURIComponent(window.Telegram.WebApp.initData)`
+
+Encoded data should be passed as `tg_encoded_data` parameter
+
+This parameter can be applied to endpoints:
+
+* `keycloak-host/realms/realm-name/protocol/openid-connect/auth`
+* `keycloak-host/realms/realm-name/broker/idp-alias/endpoint`
+
+If `tg_encoded_data` wouldn't be passed to first endpoint user will be redirected to redirection url (see keycloak setup).
+
+For more info see examples.

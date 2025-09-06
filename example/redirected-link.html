@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<head>
+    <title>Redirected page</title>
+</head>
+<body>
+<script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="YourBot" data-size="large" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
+<script type="text/javascript">
+    function onTelegramAuth(user) {
+      console.log(user);
+      const params = new URLSearchParams(window.location.search)
+      const state = params.get('state');
+      const redirectUrl = 'keycloak-host/realms/realm-name/broker/telegram-idp-alias/endpoint';
+      const redirectParams = new URLSearchParams({
+        tg_encoded_data: encodeURIComponent(utf8ToBase64(JSON.stringify(user))),
+        state: state,
+        mini_app: false
+      })
+      console.log(redirectUrl);
+      window.location.href = `${redirectUrl}?${redirectParams}`;
+    }
+    function utf8ToBase64(str) {
+      const utf8Bytes = new TextEncoder().encode(str);
+      const base64 = btoa(String.fromCharCode(...utf8Bytes));
+      return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+</script>
+</body>
