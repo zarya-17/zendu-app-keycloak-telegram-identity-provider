@@ -1,0 +1,10 @@
+# Этап сборки провайдера
+FROM gradle:8.5-jdk17 AS builder
+WORKDIR /build
+COPY . .
+RUN gradle clean build -x test
+
+# Этап Keycloak
+FROM quay.io/keycloak/keycloak:24.0.1
+WORKDIR /opt/keycloak
+COPY --from=builder /build/build/libs/*.jar /opt/keycloak/providers/
