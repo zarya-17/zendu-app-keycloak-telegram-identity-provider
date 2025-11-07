@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: keycloak-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: keycloak
+      MYSQL_USER: keycloak
+      MYSQL_PASSWORD: password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - keycloak-network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0.0
+    container_name: keycloak
+    restart: always
+    environment:
+      # Database settings
+      KC_DB: mysql
+      KC_DB_URL: jdbc:mysql://mysql:3306/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+
+      # Keycloak admin credentials
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+
+      # Optional: hostname config
+      KC_HOSTNAME_STRICT: 'false'
+      KC_HOSTNAME_STRICT_HTTPS: 'false'
+
+    command:
+      - start-dev
+      # If you want production mode, use:
+      # - start --optimized
+
+    ports:
+      - "8080:8080"
+
+    volumes:
+      # Mount the custom provider JAR
+      - ./build/libs:/opt/keycloak/providers
+
+    depends_on:
+      - mysql
+    networks:
+      - keycloak-network
+
+volumes:
+  mysql_data:
+
+networks:
+  keycloak-network:
+    driver: bridge
